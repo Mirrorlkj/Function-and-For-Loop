@@ -1,6 +1,6 @@
 ---
 title: "Programming Exercises"
-author: "Your name"
+author: "Kejing Li"
 output: github_document
 ---
 
@@ -15,13 +15,24 @@ library(tidyverse)
 ### Using a `for` loop
 
 ```{r}
+#use `for` loop by coloum, store output in integer
+unique <- vector("integer", ncol(iris))
+for(i in seq_along(iris)){
+#compute distinct values
+  unique[[i]] <- n_distinct(iris[[i]])
+#create named output
+  names(unique) <- names(iris)
+}
+unique
 
 ```
 
 ### Using a `map` function
 
 ```{r}
-
+iris %>%
+#output is integer
+  map_int(n_distinct)
 ```
 
 ## Calculate the square of each element in vector `x`
@@ -34,19 +45,60 @@ x
 ### Using a `for` loop
 
 ```{r}
-
+#output is double
+square <- vector("double", length(x))
+for(i in seq_along(x)){
+  square[[i]] <- i^2
+}
+square
 ```
 
 ### Using a `map` function
 
 ```{r}
-
+x %>%
+#use shortcut for anonymous function
+  map_dbl(~.x^2)
 ```
 
 ## Write a function to calculate length of sides in a right-triangle using the Pythagorean Theorem
 
 ```{r}
+pythagorean <- function(a = NA, b = NA, c = NA){
+  if (is.numeric (c(a,b,c))){
+    if (is.na(c)){
+    c <- sqrt(a^2 + b^2)
+    return(c)
+  } else if(is.na(a)){
+    a <- sqrt(c^2 - b^2)
+    return(a)
+  }else if(is.na(b)){
+    b <- sqrt(c^2 - a^2)
+    return(b)
+  }else if (is.na(c(a,b,c)) >=2 | is.na(c(a,b,c)) == 0){
+    stop("Please enter 2 numbers")
+  }
+  }else{
+  stop("Plese enter only numbers")}
+}
+```
+####test
+```{r}
+pythagorean(a = 3, b = 4)
+pythagorean(b = 4, c = 5)
+pythagorean(a = 3, c = 5)
+```
 
+```{r}
+pythagorean(a = 3)
+```
+```{r}
+pythagorean(a = 3, b = 4, c = 5)
+```
+
+
+```{r}
+pythagorean(a = "e")
 ```
 
 ## Session info
