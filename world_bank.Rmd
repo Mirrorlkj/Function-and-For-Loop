@@ -1,6 +1,6 @@
 ---
 title: "Exploring World Bank Data"
-author: "Your name"
+author: "Kejing Li"
 output: github_document
 ---
 
@@ -13,14 +13,41 @@ library(tidyverse)
 ## Write a function to import the data files
 
 ```{r}
+read_and_tidy <- function(path) {
+  data <- read_csv(path, skip = 4) %>%
+    filter("Indicator Code" %in% c( "IC.FRM.FEMO.ZS",
+                                    "IC.FRM.FEMM.ZS",
+                                    "IC.REG.PROC.FE",
+                                    "TX.VAL.TECH.MF.ZS") ) %>%
+    pivot_longer(-c("Country Name",
+                    "Country Code", 
+                    "Indicator Name", 
+                    "Indicator Code"),
+                 names_to = "Year",
+                 values_to = "Value") %>%
+    pivot_wider(names_from = "Indicator Code",
+                values_from = "Value")
+  
+  return(data)     
+}
 ```
 
 ## Import the data
 
 ```{r}
+directory <- dir(path = "data_world_bank", full.names = TRUE)
+data <- vector("list", length(directory))
+for (i in seq_along(directory)){
+  data[[i]] <-  read_and_tidy(directory[[1]])
+}
+
+bind_rows(data)
 ```
 
 ## Explore the data
+```{r}
+data
+```
 
 
 ## Session info
