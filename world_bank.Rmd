@@ -15,29 +15,6 @@ library(tidyverse)
 ```{r}
 read_and_tidy <- function(path) {
   data <- read.csv(path, skip = 4) %>%
-    filter("Indicator Code" %in% c( "IC.FRM.FEMO.ZS",
-                                    "IC.FRM.FEMM.ZS",
-                                    "IC.REG.PROC.FE",
-                                    "TX.VAL.TECH.MF.ZS") ) %>%
-    pivot_longer(-c("Country Name",
-                    "Country Code", 
-                    "Indicator Name", 
-                    "Indicator Code"),
-                 names_to = "Year",
-                 values_to = "Value") %>%
-    pivot_wider(names_from = "Indicator Code",
-                values_from = "Value") %>%
-  
-  return(data)     
-}
-```
-
-## Import the data
-
-```{r}
-data1 <- read.csv("data_world_bank/API_ABW_DS2_en_csv_v2_10592147.csv", skip=3)
-
-data1%>%
   select(-Country.Code, -Indicator.Name)%>%
   filter(Indicator.Code %in% c("IC.FRM.FEMO.ZS",
                                     "IC.FRM.FEMM.ZS",
@@ -54,14 +31,13 @@ data1%>%
     rename(hitech_export = TX.VAL.TECH.MF.ZS,
            female_register_procedure = IC.REG.PROC.FE,
            female_ownership_participation = IC.FRM.FEMO.ZS,
-           female_top_management = IC.FRM.FEMM.ZS) %>%
-    
-    
+           female_top_management = IC.FRM.FEMM.ZS)
   
-  
-
+  return(data)     
+}
 ```
 
+## Import the data
 
 
 ```{r}
@@ -72,6 +48,7 @@ for (i in seq_along(directory)){
 }
 
 bind_rows(data)
+
 ```
 
 ## Explore the data
