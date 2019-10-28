@@ -8,28 +8,49 @@ Kejing Li
 library(tidyverse)
 ```
 
-    ## -- Attaching packages --------------------------------------- tidyverse 1.2.1 --
+    ## -- Attaching packages ---------------------------------------------------------------------- tidyverse 1.2.1 --
 
     ## v ggplot2 3.2.1     v purrr   0.3.2
     ## v tibble  2.1.3     v dplyr   0.8.3
     ## v tidyr   1.0.0     v stringr 1.4.0
     ## v readr   1.3.1     v forcats 0.4.0
 
-    ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+    ## -- Conflicts ------------------------------------------------------------------------- tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
+
+## Introduction
+
+> “Gender inequality is not only a pressing moral and social issue, but
+> also a critical economic \>challenge.” — McKinsey Global Institute
+
+This report intends to explore the female representation in top
+management.
+
+Gender inequality is a commonplace talk of an old scholar. However, in
+recent years, the phenomenon is discussed under a new context -
+leadership in business. Incessant evidences suggest that the gender
+diversity contributes to the bussiness operation. To better understand
+the current development, this report analyzes four variables from the
+world bank database:
+
+1.  High-technology exports (% of manufactured exports)
+2.  Firms with female top manager (% of firms)
+3.  Firms with female participation in ownership (% of firms)
+4.  Start-up procedures to register a business)
 
 ## Write a function to import the data files
 
 ``` r
 read_and_tidy <- function(path) {
   data <- read.csv(path, skip = 4) %>%
+ #select & filter data needed for analysis
   select(-Country.Code, -Indicator.Name)%>%
   filter(Indicator.Code %in% c("IC.FRM.FEMO.ZS",
                                "IC.FRM.FEMM.ZS",
                                "IC.REG.PROC.FE",
                                "TX.VAL.TECH.MF.ZS"))%>%
-     
+  #put each observations in row, each variables in its columns
     pivot_longer(-c("Country.Name",
                     "Indicator.Code"),
                  names_to = "Year",
@@ -37,6 +58,7 @@ read_and_tidy <- function(path) {
                  names_prefix = "X") %>%
     pivot_wider(names_from = "Indicator.Code",
                 values_from = "Value") %>%
+  #remane the code in to infomative names
     rename(hitech_export = TX.VAL.TECH.MF.ZS,
            female_register_procedure = IC.REG.PROC.FE,
            female_ownership_participation = IC.FRM.FEMO.ZS,
@@ -48,8 +70,11 @@ read_and_tidy <- function(path) {
 ## Import the data
 
 ``` r
+# silent the warning message
 directory <- dir(path = "data_world_bank", full.names = TRUE)
+#create an empty dataframe
 data <- data.frame()
+#use 'for' loop to input and combine data
 for (i in seq_along(directory)){
   data <- bind_rows(data, read_and_tidy(directory[i]))
 }
@@ -58,6 +83,12 @@ for (i in seq_along(directory)){
 ## Explore the data
 
 ### Firms with female participation in ownership by year
+
+As shown below, the data start merely from the 21 century when the
+phenomenon came into the public attention. But the overall trend doesn’t
+appear any upward nor downward trend over the period. Whatever the
+variation, less than half of the firms have female participated in the
+ownership.
 
 ``` r
 data %>%
@@ -72,6 +103,11 @@ data %>%
 ![](world_bank_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ### Firms with female top manager by year
+
+As like the female participation in ownership data, percentage of firms
+with female manager don’t have apparent trend over the years concerned,
+but with a even lower average, fluctuating between 10% to 20%. Females
+are largely underrepresented in the top management.
 
 ``` r
 data %>%
@@ -89,6 +125,15 @@ data %>%
 
 ### Covariance of female participation in ownership and female top manager
 
+Since neither the percentage of female in top mangement nor female
+participation in ownership alone indicate any trend along the years.
+Doubts arise whether these two variables are telling the same story.
+Covariance analysis is hereby given that demonstrates these two
+variables are positively related to each other. Where females appear
+more often as top managers, female participation in ownership is
+correspondingly higher. This result suggests the position of female in
+leadership is consistent across different measurements.
+
 ``` r
 data%>%
   drop_na(female_ownership_participation, female_top_management) %>%
@@ -96,7 +141,7 @@ data%>%
   ggplot()+
   geom_smooth(aes(female_top_management,female_ownership_participation))+
 labs(title = "Relationship between female participation in ownership and female top manager",
-        x = "Female top manager",
+        x = "Female top manager(% of firms)",
         y = "Female participation in ownership")
 ```
 
@@ -104,7 +149,17 @@ labs(title = "Relationship between female participation in ownership and female 
 
 ![](world_bank_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-### Covariance of Start-up procedures to register a business(female) and female top manager
+### Look into the phenomenon
+
+Previous analysis proved the existence of the gender inequality, and
+showed a stagnant situation. Such situation set me thinking, wondering
+what relates to or causes the phenomenon. Therefore, shown below, I
+tested two possible related variables, but the output failed to give any
+enlightment. However, it could be just that the number or quality of
+dataset isn’t good enough to reflect the reality. Besides, other
+variables may be included to give more insights.
+
+#### Covariance of Start-up procedures to register a business(female) and female top manager
 
 ``` r
 data%>%
@@ -113,14 +168,17 @@ data%>%
   ggplot()+
   scale_x_continuous(limits = c(0, 15))+
   geom_boxplot(aes(female_register_procedure, female_top_management,
-                  group = cut_width(female_register_procedure, 2)))
+                  group = cut_width(female_register_procedure, 2)))+
+  labs(title = "Relationship between  Start-up procedures to register a business(female) and female top manager",
+        x = "Start-up procedures to register a business(female)",
+        y = "Female top manager (% of firms)")
 ```
 
     ## Warning: Removed 3 rows containing missing values (stat_boxplot).
 
 ![](world_bank_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
-### Covariance of High-technology exports and female top manager
+#### Covariance of High-technology exports and female top manager
 
 ``` r
 data%>%
@@ -128,7 +186,10 @@ data%>%
   group_by(Country.Name)%>%
   ggplot(aes(hitech_export, female_top_management))+
   geom_point(alpha = 1/2)+
-  geom_smooth()
+  geom_smooth()+
+  labs(title = "Relationship between  High-technology exports and female top manager",
+        x = "High-technology exports (% of manufactured exports)",
+        y = "Female top manager (% of firms)")
 ```
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
@@ -151,7 +212,7 @@ devtools::session_info()
     ##  collate  English_United States.1252  
     ##  ctype    English_United States.1252  
     ##  tz       America/Chicago             
-    ##  date     2019-10-27                  
+    ##  date     2019-10-28                  
     ## 
     ## - Packages --------------------------------------------------------------
     ##  package     * version date       lib source        
