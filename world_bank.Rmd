@@ -17,9 +17,9 @@ read_and_tidy <- function(path) {
   data <- read.csv(path, skip = 4) %>%
   select(-Country.Code, -Indicator.Name)%>%
   filter(Indicator.Code %in% c("IC.FRM.FEMO.ZS",
-                                    "IC.FRM.FEMM.ZS",
-                                    "IC.REG.PROC.FE",
-                                    "TX.VAL.TECH.MF.ZS"))%>%
+                               "IC.FRM.FEMM.ZS",
+                               "IC.REG.PROC.FE",
+                               "TX.VAL.TECH.MF.ZS"))%>%
      
     pivot_longer(-c("Country.Name",
                     "Indicator.Code"),
@@ -32,7 +32,6 @@ read_and_tidy <- function(path) {
            female_register_procedure = IC.REG.PROC.FE,
            female_ownership_participation = IC.FRM.FEMO.ZS,
            female_top_management = IC.FRM.FEMM.ZS)
-  
   return(data)     
 }
 ```
@@ -40,20 +39,76 @@ read_and_tidy <- function(path) {
 ## Import the data
 
 
-```{r}
+```{r, warning=FALSE }
 directory <- dir(path = "data_world_bank", full.names = TRUE)
-data <- vector("list", length(directory))
+data <- data.frame()
 for (i in seq_along(directory)){
-  data[[i]] <-  read_and_tidy(directory[[1]])
+  data <- bind_rows(data, read_and_tidy(directory[i]))
 }
-
-bind_rows(data)
 
 ```
 
 ## Explore the data
+
+### Firms with female participation in ownership by year
 ```{r}
-data
+data %>%
+  drop_na(female_ownership_participation)%>%
+  ggplot()+
+  geom_boxplot(aes(Year,female_ownership_participation))+
+  labs(title = "Firms with female participation in ownership",
+        x = "Year",
+        y = "% of firms")
+```
+
+
+###  Firms with female top manager by year
+```{r}
+data %>%
+  drop_na(female_top_management)%>%
+  group_by(Year) %>%
+  summarize(female_top_management = mean(female_top_management)) %>%
+  ggplot()+
+  geom_col(aes(Year, female_top_management))+
+  labs(title = "Firms with female top manager",
+        x = "Year",
+        y = "% of firms")
+```
+
+### Covariance of female participation in ownership and female top manager
+
+```{r}
+data%>%
+  drop_na(female_ownership_participation, female_top_management) %>%
+  group_by(Country.Name)%>%
+  ggplot()+
+  geom_smooth(aes(female_top_management,female_ownership_participation))+
+labs(title = "Relationship between female participation in ownership and female top manager",
+        x = "Female top manager",
+        y = "Female participation in ownership")
+
+```
+
+### Covariance of Start-up procedures to register a business(female) and female top manager
+```{r}
+data%>%
+  drop_na(female_register_procedure, female_top_management) %>%
+  group_by(Country.Name)%>%
+  ggplot()+
+  scale_x_continuous(limits = c(0, 15))+
+  geom_boxplot(aes(female_register_procedure, female_top_management,
+                  group = cut_width(female_register_procedure, 2)))
+```
+
+
+### Covariance of High-technology exports and female top manager
+```{r}
+data%>%
+  drop_na(hitech_export, female_top_management) %>%
+  group_by(Country.Name)%>%
+  ggplot(aes(hitech_export, female_top_management))+
+  geom_point(alpha = 1/2)+
+  geom_smooth()
 ```
 
 
