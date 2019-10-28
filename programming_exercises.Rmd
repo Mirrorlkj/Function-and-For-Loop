@@ -73,7 +73,7 @@ valid_side <- function(x) {
 }
 
 #three different input conditions  
-get_triangle_third_side_length <- function(a = NA, b = NA, c = NA){
+pythagorean <- function(a = NA, b = NA, c = NA){
   if (is.na(a) && valid_side(b) && valid_side(c) && b < c){
     return(sqrt(c^2 - b^2))
   } else if (is.na(b) && valid_side(a) && valid_side(c) && a < c){
@@ -86,20 +86,18 @@ get_triangle_third_side_length <- function(a = NA, b = NA, c = NA){
 }  
 ```
 
-#### test
-get_triangle_third_side_length(a=1,b=2,c=3)
-get_triangle_third_side_length(a=1)
-get_triangle_third_side_length(a=1,b="1.2")
-get_triangle_third_side_length(a=1,b="1.2",c=3)
-get_triangle_third_side_length(a=1,b=2,c="na")
-get_triangle_third_side_length(a=1,b=2,c=FALSE)
-get_triangle_third_side_length(a=1,b=2)
-get_triangle_third_side_length(a=1,c=1)
-get_triangle_third_side_length(b=1,c=3)
-get_triangle_third_side_length(a=2,c=3)
-get_triangle_third_side_length(a=2,b=3)
-
-
+### test
+pythagorean(a=1,b=2,c=3)
+pythagorean(a=1)
+pythagorean(a=1,b="1.2")
+pythagorean(a=1,b="1.2",c=3)
+pythagorean(a=1,b=2,c="na")
+pythagorean(a=1,b=2,c=FALSE)
+pythagorean(a=1,b=2)
+pythagorean(a=1,c=1)
+pythagorean(b=1,c=3)
+pythagorean(a=2,c=3)
+pythagorean(a=2,b=3)
 
 ## Session info
 
