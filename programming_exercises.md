@@ -8,14 +8,14 @@ Kejing Li
 library(tidyverse)
 ```
 
-    ## -- Attaching packages ----------------------------- tidyverse 1.2.1 --
+    ## -- Attaching packages ---------------------------------------------------------------------- tidyverse 1.2.1 --
 
     ## v ggplot2 3.2.1     v purrr   0.3.2
     ## v tibble  2.1.3     v dplyr   0.8.3
     ## v tidyr   1.0.0     v stringr 1.4.0
     ## v readr   1.3.1     v forcats 0.4.0
 
-    ## -- Conflicts -------------------------------- tidyverse_conflicts() --
+    ## -- Conflicts ------------------------------------------------------------------------- tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -96,32 +96,32 @@ valid_side <- function(x) {
 }
 
 #three different input conditions  
-get_triangle_third_side_length <- function(a = NA, b = NA, c = NA){
+pythagorean <- function(a = NA, b = NA, c = NA){
   if (is.na(a) && valid_side(b) && valid_side(c) && b < c){
-    return(sqrt(c^2 - b^2))
+    sqrt(c^2 - b^2)
   } else if (is.na(b) && valid_side(a) && valid_side(c) && a < c){
-      return(sqrt(c^2 - a^2))
+      sqrt(c^2 - a^2)
   } else if (is.na(c) && valid_side(a) && valid_side(b)){
-      return(sqrt(a^2 + b^2))
+     sqrt(a^2 + b^2)
   } else {
       stop("Please input only 2 valid numeric values(note that a<c and b<c)")
   }
 }  
 ```
 
-#### test
+### Test
 
-get\_triangle\_third\_side\_length(a=1,b=2,c=3)
-get\_triangle\_third\_side\_length(a=1)
-get\_triangle\_third\_side\_length(a=1,b=“1.2”)
-get\_triangle\_third\_side\_length(a=1,b=“1.2”,c=3)
-get\_triangle\_third\_side\_length(a=1,b=2,c=“na”)
-get\_triangle\_third\_side\_length(a=1,b=2,c=FALSE)
-get\_triangle\_third\_side\_length(a=1,b=2)
-get\_triangle\_third\_side\_length(a=1,c=1)
-get\_triangle\_third\_side\_length(b=1,c=3)
-get\_triangle\_third\_side\_length(a=2,c=3)
-get\_triangle\_third\_side\_length(a=2,b=3)
+    pythagorean(a=1,b=2,c=3)
+    pythagorean(a=1)
+    pythagorean(a=1,b="1.2")
+    pythagorean(a=1,b="1.2",c=3)
+    pythagorean(a=1,b=2,c="na")
+    pythagorean(a=1,b=2,c=FALSE)
+    pythagorean(a=1,b=2)
+    pythagorean(a=1,c=1)
+    pythagorean(b=1,c=3)
+    pythagorean(a=2,c=3)
+    pythagorean(a=2,b=3)
 
 ## Session info
 

@@ -75,18 +75,20 @@ valid_side <- function(x) {
 #three different input conditions  
 pythagorean <- function(a = NA, b = NA, c = NA){
   if (is.na(a) && valid_side(b) && valid_side(c) && b < c){
-    return(sqrt(c^2 - b^2))
+    sqrt(c^2 - b^2)
   } else if (is.na(b) && valid_side(a) && valid_side(c) && a < c){
-      return(sqrt(c^2 - a^2))
+      sqrt(c^2 - a^2)
   } else if (is.na(c) && valid_side(a) && valid_side(b)){
-      return(sqrt(a^2 + b^2))
+     sqrt(a^2 + b^2)
   } else {
       stop("Please input only 2 valid numeric values(note that a<c and b<c)")
   }
 }  
 ```
 
-### test
+### Test
+
+```
 pythagorean(a=1,b=2,c=3)
 pythagorean(a=1)
 pythagorean(a=1,b="1.2")
@@ -98,6 +100,7 @@ pythagorean(a=1,c=1)
 pythagorean(b=1,c=3)
 pythagorean(a=2,c=3)
 pythagorean(a=2,b=3)
+```
 
 ## Session info
 
