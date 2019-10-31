@@ -66,11 +66,7 @@ x %>%
 ```{r}
 #test if input it's numeric and >0
 valid_side <- function(x) {
-  if (is.numeric(x) && x > 0) {
-    return(TRUE)
-  } 
-  return(FALSE)
-}
+  (is.numeric(x) && x > 0) }
 
 #three different input conditions  
 pythagorean <- function(a = NA, b = NA, c = NA){
@@ -88,7 +84,8 @@ pythagorean <- function(a = NA, b = NA, c = NA){
 
 ### Test
 
-```
+
+```{r, error = TRUE}
 pythagorean(a=1,b=2,c=3)
 pythagorean(a=1)
 pythagorean(a=1,b="1.2")
