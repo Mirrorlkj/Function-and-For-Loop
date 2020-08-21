@@ -7,7 +7,6 @@ library(tidyverse)
 ```
 
 ## Introduction
-This repo contains two class exercises:
 
 1. [programming exercise](programming_exercises.md)
-1. [world bank data exercise](world_bank.md)
+1. [world bank data analysis](world_bank.md)
